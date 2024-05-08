@@ -44,3 +44,4 @@ This script is for educational and personal use only. Ensure you have permission
 
 This script is licensed under the [MIT License](LICENSE). You are free to use, modify, and distribute it, but must provide attribution to the original author.
 
+source https://github.com/katzura1/Pixelversexyz-Bot 
