@@ -13,6 +13,8 @@ logger.add(sink=sys.stdout, format="<white>{time:YYYY-MM-DD HH:mm:ss}</white>"
 url = 'https://api-clicker.pixelverse.xyz/api/'
 secret = ''
 tgId = ''
+data = ''
+username = ''    # fill with your username telegram
 
 logger.info("Starting the clicker bot... with telegramUserId:"+tgId)
 
@@ -23,10 +25,11 @@ headers = {
     'cache-control': 'no-cache',
     'content-type': 'application/json',
     'dnt': '1',
-    'origin': 'https://web.telegram.org',
+    'Initdata': data,
+    'origin': 'https://sexyzbot.pxlvrs.io/',
     'pragma': 'no-cache',
     'priority': 'u=1, i',
-    'referer': 'https://web.telegram.org/',
+    'referer': 'https://sexyzbot.pxlvrs.io/',
     'sec-ch-ua': '"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',
     'sec-ch-ua-mobile': '?0',
     'sec-ch-ua-platform': '"macOS"',
@@ -36,6 +39,7 @@ headers = {
     'secret': secret,
     'tg-id': tgId,
     'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+    'username': username
 }
 
 # Infinite loop with a 1-second interval
