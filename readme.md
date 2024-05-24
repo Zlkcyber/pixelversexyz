@@ -17,12 +17,12 @@ This script automates clicks in the PixelverseXYZ app. It uses the developer con
    - Look for `user` on the `network`
    - Identify the request that contains the `tgid` ,`secret` `initdata` and `username`.
    - These values may be present in the request headers or the URL itself.
-
-4. **Edit the Script**
+[![App Screenshot](https://raw.githubusercontent.com/Zlkcyber/pixelversexyz/main/pixel3.png)](https://raw.githubusercontent.com/Zlkcyber/pixelversexyz/main/pixel3.png)
+5. **Edit the Script**
    - Open the script file `main.py`.
    - Update the placeholders for `tgid` ,`secret` `initdata` and `username` with the extracted information from step 3.
 
-5. **Run the Script**
+6. **Run the Script**
    - Ensure Python is installed on your system.
    - Open a terminal or command prompt in the directory where `main.py` is located.
    - Execute the script with the following command:
