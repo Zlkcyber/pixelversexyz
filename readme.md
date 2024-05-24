@@ -13,14 +13,14 @@ This script automates clicks in the PixelverseXYZ app. It uses the developer con
 2. **Open the PixelverseXYZ App**
    - Navigate to the PixelverseXYZ app or website in your browser to start capturing network traffic.
 
-3. **Extract TGID and Secret**
-   - Look for HTTP requests to the following endpoint: `https://api-clicker.pixelverse.xyz/api/users`.
-   - Identify the request that contains the `tgid` and `secret`.
+3. **Extract Initdata, TGID and Secret**
+   - Look for `user` on the `network`
+   - Identify the request that contains the `tgid` ,`secret` `initdata` and `username`.
    - These values may be present in the request headers or the URL itself.
 
 4. **Edit the Script**
    - Open the script file `main.py`.
-   - Update the placeholders for `tgid` and `secret` with the extracted information from step 3.
+   - Update the placeholders for `tgid` ,`secret` `initdata` and `username` with the extracted information from step 3.
 
 5. **Run the Script**
    - Ensure Python is installed on your system.
