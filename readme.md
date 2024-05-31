@@ -6,6 +6,9 @@ This script automates clicks in the PixelverseXYZ app. It uses the developer con
 
 ## Step-by-Step Instructions
 
+- `git clone https://github.com/Zlkcyber/pixelversexyz.git`
+- `cd pixelversexyz`
+
 1. **Open the Developer Console**
    - In your web browser, open the developer tools (usually accessed with `F12` or `Ctrl+Shift+I`).
    - Go to the "Network" tab to inspect network requests.
@@ -27,7 +30,7 @@ This script automates clicks in the PixelverseXYZ app. It uses the developer con
    - Open a terminal or command prompt in the directory where `main.py` is located.
    - Execute the script with the following command:
      ```bash
-     python main.py
+     python3 main.py
      ```
 
 ## Troubleshooting
