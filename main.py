@@ -1,24 +1,20 @@
 import requests
+import logging
 import time
-import sys
-from loguru import logger
-# Set up the logger with custom formatting and color
-logger.remove()  # Remove default handler
-logger.add(sink=sys.stdout, format="<white>{time:YYYY-MM-DD HH:mm:ss}</white>"
-                                   " | <level>{level: <8}</level>"
-                                   " | <cyan><b>{line}</b></cyan>"
-                                   " - <white><b>{message}</b></white>")
 
-# The URL for the API endpoint
+
+logging.basicConfig(format='%(asctime)s | %(levelname)-8s | %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.INFO)
+
+
 url = 'https://api-clicker.pixelverse.xyz/api/'
-secret = ''
-tgId = ''
-data = ''
-username = ''    # fill with your username telegram
+username = input("Please enter your telegram username without @: ") 
+tg_id = input("Please enter your telegram id: ")
+secret = input("Please enter secret: ")
+data = input("Please enter your Initdata: ")
 
-logger.info("Starting the clicker bot... with telegramUserId:"+tgId)
+logging.info("Starting the clicker bot... with telegramUserId:" + tg_id)
 
-# The HTTP headers to send with the request
+
 headers = {
     'accept': 'application/json, text/plain, */*',
     'accept-language': 'en,id-ID;q=0.9,id;q=0.8',
@@ -37,89 +33,92 @@ headers = {
     'sec-fetch-mode': 'cors',
     'sec-fetch-site': 'cross-site',
     'secret': secret,
-    'tg-id': tgId,
+    'tg-id': tg_id,
     'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
     'username': username
 }
 
-# Infinite loop with a 1-second interval
-try:
-    while True:
-        currentPetId = ""
-        #get user data
-        logger.info("Getting user data...")
-        response = requests.get(url + 'users', headers=headers)
-        if(response.status_code == 200):
-            response = response.json()
-            currentPetId = response['pet']['id']
-        #get pet
-        logger.info("Getting pets...")
-        response = requests.get(url + 'pets', headers=headers)
-        if(response.status_code == 200):
-            response = response.json()
-            listPet = response['data']
-            logger.info("found "+str(len(listPet))+" pets")
-            #looping through pets
-            for pet in listPet:
-                userPet = pet['userPet']
-                idPet = userPet['id']
 
-                #select pet
-                logger.info("Selecting pet with id: "+str(idPet))
-                response = requests.post(url + 'pets/user-pets/'+idPet+'/select',  headers=headers)
-                if(response.status_code == 201 or idPet == currentPetId):
-                    logger.info("Pet selected")
-                    currentPetId = idPet
-                    #get user data with current pet
-                    response = requests.get(url + 'users', headers=headers)
-                    if(response.status_code == 200):
-                        response = response.json()
-                        pointPerClick = response['pointPerClick']
-                        clicksCount = response['clicksCount']
-                        pet = response['pet']
-                        petName = pet['pet']['name']
-                        petEnergy = pet['energy']
-                        level = pet['level']
-                        levelUpPrice = pet['levelUpPrice']
+def start_bot():
+    try:
+        while True:
+            current_pet_id = ""
 
-                        logger.info("Pet name: "+petName+" - Energy: "+str(petEnergy)+" - Level: "+str(level)+" - Level up price: "+str(levelUpPrice))
-                        
-                        if(petEnergy > 0):
-                            #click pet
-                            dataClick = {
-                                "clicksAmount": petEnergy
-                            }
-                            logger.info("Clicking pet with "+str(petEnergy)+" energy")
-                            response = requests.post(url + 'users', headers=headers, json=dataClick)
-                            if(response.status_code == 201):
-                                response = response.json()
-                                clicksCount = response['clicksCount']
-                                logger.success("Pet clicked, current point: "+str(round(clicksCount, 2)))
-                        
-                        while(clicksCount > levelUpPrice):
-                            #level up pet
-                            logger.info("Level up pet with price: "+str(levelUpPrice))
-                            response = requests.post(url + 'pets/user-pets/'+idPet+'/level-up', headers=headers)
-                            if(response.status_code == 201):
-                                response = response.json()
-                                level = response['level']
-                                levelUpPrice = response['levelUpPrice']
-                                clicksCount = clicksCount - levelUpPrice
-                                logger.success("Pet level up to "+str(level)+", next level price: "+str(levelUpPrice))
-                            else:
-                                break;
+            # Get user data
+            logging.info("Getting user data...")
+            response = requests.get(url + 'users', headers=headers)
+            if response.status_code == 200:
+                user_data = response.json()
+                current_pet_id = user_data['pet']['id']
+
+            # Get pets
+            logging.info("Getting pets...")
+            response = requests.get(url + 'pets', headers=headers)
+            if response.status_code == 200:
+                pets_data = response.json()
+                list_pet = pets_data['data']
+                logging.info(f"Found {len(list_pet)} pets")
+
+                # Loop through pets
+                for pet in list_pet:
+                    user_pet = pet['userPet']
+                    id_pet = user_pet['id']
+
+                    # Select pet
+                    logging.info(f"Selecting pet with id: {id_pet}")
+                    response = requests.post(url + f'pets/user-pets/{id_pet}/select', headers=headers)
+                    if response.status_code == 201 or id_pet == current_pet_id:
+                        logging.info("Pet selected")
+                        current_pet_id = id_pet
+
+                        # Get user data with current pet
+                        response = requests.get(url + 'users', headers=headers)
+                        if response.status_code == 200:
+                            user_data = response.json()
+                            clicks_count = user_data['clicksCount']
+                            pet = user_data['pet']
+                            pet_name = pet['pet']['name']
+                            pet_energy = pet['energy']
+                            level = pet['level']
+                            level_up_price = pet['levelUpPrice']
+
+                            logging.info(f"Pet name: {pet_name} - Energy: {pet_energy} - Level: {level} - Level up price: {level_up_price}")
+                            
+                            # claim pet
+                            response = requests.post(url + 'mining/claim', headers=headers)
+                            if response.status_code == 201:
+                                claim_pet_data = response.json()
+                                claim_amount = claim_pet_data['claimedAmount']
+                                clicks_count = claim_amount + clicks_count
+                                logging.info(f"Pet claimed, current point: {clicks_count}")
+
+                            while clicks_count > level_up_price:
+                                # Level up pet
+                                logging.info(f"Level up pet with price: {level_up_price}")
+                                response = requests.post(url + f'pets/user-pets/{id_pet}/level-up', headers=headers)
+                                if response.status_code == 201:
+                                    response_data = response.json()
+                                    level = response_data['level']
+                                    level_up_price = response_data['levelUpPrice']
+                                    clicks_count -= level_up_price
+                                    logging.info(f"Pet level up to {level}, next level price: {level_up_price}")
+                                else:
+                                    break
+                        else:
+                            logging.error("Error getting user data")
+                            time.sleep(1)
                     else:
-                        logger.error("Error getting user data")
+                        logging.error(f"Error selecting pet: {response.status_code} - {response.reason}")
                         time.sleep(1)
-                else:
-                    logger.error("Error selecting pet : "+str(response.status_code)+" - "+response.text)
-                    time.sleep(1)
-            logger.info("Sleeping for 10 minutes")
-            time.sleep(600)
-        else:
-            logger.error("Error getting pets")
-            time.sleep(1)
+            else:
+                logging.error("Error getting pets")
+                time.sleep(1)
+
+            logging.info("Sleeping for 10 minutes")
+            time.sleep(600)  # Sleep for 10 minutes
+    except Exception as e:
+        logging.error("An error occurred:", exc_info=e)
 
 
-except KeyboardInterrupt:
-    print("Loop interrupted. Stopping...")
+# Start the bot
+start_bot()
